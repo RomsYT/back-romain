@@ -6,22 +6,25 @@ on:
       - main
 
 jobs:
-  build-and-push-docker-image:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      
-      - name: Setup Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      
       - name: Build and push Docker image
-        run: |
-          docker buildx build --push --tag ghcr.io/imenmlikaa/back:latest .
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/back:latest
