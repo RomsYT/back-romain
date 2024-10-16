@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-permissions: # Correction ici : le bloc permissions doit être au niveau du job
+permissions: # Le bloc permissions doit être au niveau des jobs, et pas à l'intérieur.
   contents: read
   packages: write
   id-token: write
@@ -29,4 +29,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docke
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ghcr.io/imenmlikaa/back:latest
